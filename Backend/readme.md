@@ -58,3 +58,50 @@ Registers a new user by validating the email, first name, and password. Upon suc
   ]
 }
 ```
+
+---
+
+# /users/login Endpoint Documentation
+
+## Description
+Authenticates a user by validating the email and password. Upon successful authentication, the endpoint returns a JWT token and the user details.
+
+## Request Details
+- **Method:** POST
+- **Endpoint:** /users/login
+- **Content-Type:** application/json
+- **Body Parameters:**
+  - `email`: A valid email address (required)
+  - `password`: A string (required, minimum 6 characters)
+
+## Response
+- **Success:**
+  - **Status Code:** 200 OK
+  - **Body:** JSON with properties:
+    - `token`: JWT authentication token
+    - `user`: Object with user details (excluding the password)
+- **Authentication Error:**
+  - **Status Code:** 401 Unauthorized
+  - **Body:** JSON object with an error message
+
+### Examples
+
+#### Success Response
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "id": "64f1c2e5b9d1c2a5e8f7a123",
+    "firstname": "John",
+    "lastname": "Doe",
+    "email": "john.doe@example.com"
+  }
+}
+```
+
+#### Authentication Error Response
+```json
+{
+  "message": "Invalid email or password"
+}
+```
