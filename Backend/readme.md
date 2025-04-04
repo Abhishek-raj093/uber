@@ -26,39 +26,6 @@ Registers a new user by validating the email, first name, and password. Upon suc
   - **Status Code:** 400 Bad Request
   - **Body:** JSON object containing an array of error messages
 
-### Examples
-
-#### Success Response
-```json
-{
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "user": {
-    "id": "64f1c2e5b9d1c2a5e8f7a123",
-    "firstname": "John",
-    "lastname": "Doe",
-    "email": "john.doe@example.com"
-  }
-}
-```
-
-#### Validation Error Response
-```json
-{
-  "errors": [
-    {
-      "msg": "Invalid value",
-      "param": "email",
-      "location": "body"
-    },
-    {
-      "msg": "Password must be at least 6 characters long",
-      "param": "password",
-      "location": "body"
-    }
-  ]
-}
-```
-
 ---
 
 # /users/login Endpoint Documentation
@@ -84,24 +51,79 @@ Authenticates a user by validating the email and password. Upon successful authe
   - **Status Code:** 401 Unauthorized
   - **Body:** JSON object with an error message
 
+---
+
+# /users/profile Endpoint Documentation
+
+## Description
+Retrieves the profile of the authenticated user. The user must be logged in and provide a valid JWT token.
+
+## Request Details
+- **Method:** GET
+- **Endpoint:** /users/profile
+- **Headers:**
+  - `Authorization`: Bearer `<JWT token>` (required)
+
+## Response
+- **Success:**
+  - **Status Code:** 200 OK
+  - **Body:** JSON object containing the user's profile details.
+- **Authentication Error:**
+  - **Status Code:** 401 Unauthorized
+  - **Body:** JSON object with an error message.
+
 ### Examples
 
 #### Success Response
 ```json
 {
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "user": {
-    "id": "64f1c2e5b9d1c2a5e8f7a123",
-    "firstname": "John",
-    "lastname": "Doe",
-    "email": "john.doe@example.com"
-  }
+  "id": "64f1c2e5b9d1c2a5e8f7a123",
+  "firstname": "John",
+  "lastname": "Doe",
+  "email": "john.doe@example.com"
 }
 ```
 
 #### Authentication Error Response
 ```json
 {
-  "message": "Invalid email or password"
+  "message": "Unauthorized"
+}
+```
+
+---
+
+# /users/logout Endpoint Documentation
+
+## Description
+Logs out the authenticated user by clearing the JWT token and blacklisting it.
+
+## Request Details
+- **Method:** GET
+- **Endpoint:** /users/logout
+- **Headers:**
+  - `Authorization`: Bearer `<JWT token>` (required)
+
+## Response
+- **Success:**
+  - **Status Code:** 200 OK
+  - **Body:** JSON object with a success message.
+- **Authentication Error:**
+  - **Status Code:** 401 Unauthorized
+  - **Body:** JSON object with an error message.
+
+### Examples
+
+#### Success Response
+```json
+{
+  "message": "Logged out successfully"
+}
+```
+
+#### Authentication Error Response
+```json
+{
+  "message": "Unauthorized"
 }
 ```
