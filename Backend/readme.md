@@ -127,3 +127,76 @@ Logs out the authenticated user by clearing the JWT token and blacklisting it.
   "message": "Unauthorized"
 }
 ```
+
+---
+
+# /captains/register Endpoint Documentation
+
+## Description
+Registers a new captain by validating the email, first name, password, and vehicle details. Upon successful registration, the endpoint returns the captain's details.
+
+## Request Details
+- **Method:** POST
+- **Endpoint:** /captains/register
+- **Content-Type:** application/json
+- **Body Parameters:**
+  - `fullname`: An object containing:
+    - `firstname` (string, required, minimum 3 characters)
+    - `lastname` (string, optional, minimum 3 characters if provided)
+  - `email`: A valid email address (required)
+  - `password`: A string (required, minimum 6 characters)
+  - `vehicle`: An object containing:
+    - `color` (string, required, minimum 3 characters)
+    - `plate` (string, required, minimum 3 characters)
+    - `capacity` (integer, required, minimum 1)
+    - `vehicleType` (string, required, one of: `car`, `motorcycle`, `auto`)
+
+## Response
+- **Success:**
+  - **Status Code:** 201 Created
+  - **Body:** JSON with properties:
+    - `id`: Unique identifier for the captain
+    - `fullname`: Object containing `firstname` and `lastname`
+    - `email`: Captain's email address
+    - `vehicle`: Object containing vehicle details
+- **Validation Error:**
+  - **Status Code:** 400 Bad Request
+  - **Body:** JSON object containing an array of error messages
+
+### Examples
+
+#### Success Response
+```json
+{
+  "id": "64f1c2e5b9d1c2a5e8f7a456",
+  "fullname": {
+    "firstname": "Jane",
+    "lastname": "Smith"
+  },
+  "email": "jane.smith@example.com",
+  "vehicle": {
+    "color": "Red",
+    "plate": "ABC123",
+    "capacity": 4,
+    "vehicleType": "car"
+  }
+}
+```
+
+#### Validation Error Response
+```json
+{
+  "errors": [
+    {
+      "msg": "First name is at least 3 characters long",
+      "param": "fullname.firstname",
+      "location": "body"
+    },
+    {
+      "msg": "Vehicle type must be either car, bike, or truck",
+      "param": "vehicle.vehicleType",
+      "location": "body"
+    }
+  ]
+}
+```
