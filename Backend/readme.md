@@ -140,28 +140,57 @@ Registers a new captain by validating the email, first name, password, and vehic
 - **Endpoint:** /captains/register
 - **Content-Type:** application/json
 - **Body Parameters:**
-  - `fullname`: An object containing:
-    - `firstname` (string, required, minimum 3 characters)
-    - `lastname` (string, optional, minimum 3 characters if provided)
-  - `email`: A valid email address (required)
-  - `password`: A string (required, minimum 6 characters)
-  - `vehicle`: An object containing:
-    - `color` (string, required, minimum 3 characters)
-    - `plate` (string, required, minimum 3 characters)
-    - `capacity` (integer, required, minimum 1)
-    - `vehicleType` (string, required, one of: `car`, `motorcycle`, `auto`)
+```json
+{
+  "fullname": {
+    "firstname": "string", // required, minimum 3 characters
+    "lastname": "string" // optional, minimum 3 characters if provided
+  },
+  "email": "string", // required, valid email address
+  "password": "string", // required, minimum 6 characters
+  "vehicle": {
+    "color": "string", // required, minimum 3 characters
+    "plate": "string", // required, minimum 3 characters
+    "capacity": "integer", // required, minimum 1
+    "vehicleType": "string" // required, one of: car, motorcycle, auto
+  }
+}
+```
 
 ## Response
 - **Success:**
   - **Status Code:** 201 Created
-  - **Body:** JSON with properties:
-    - `id`: Unique identifier for the captain
-    - `fullname`: Object containing `firstname` and `lastname`
-    - `email`: Captain's email address
-    - `vehicle`: Object containing vehicle details
+  - **Body:**
+```json
+{
+  "id": "string", // unique identifier for the captain
+  "fullname": {
+    "firstname": "string",
+    "lastname": "string"
+  },
+  "email": "string",
+  "vehicle": {
+    "color": "string",
+    "plate": "string",
+    "capacity": "integer",
+    "vehicleType": "string"
+  }
+}
+```
 - **Validation Error:**
   - **Status Code:** 400 Bad Request
-  - **Body:** JSON object containing an array of error messages
+  - **Body:**
+```json
+{
+  "errors": [
+    {
+      "msg": "string", // error message
+      "param": "string", // parameter causing the error
+      "location": "string" // location of the parameter (e.g., body)
+    }
+  ]
+}
+```
 
 ### Examples
 
@@ -198,5 +227,125 @@ Registers a new captain by validating the email, first name, password, and vehic
       "location": "body"
     }
   ]
+}
+```
+
+# /captains/login Endpoint Documentation
+
+## Description
+Authenticates a captain by validating the email and password. Upon successful authentication, the endpoint returns a JWT token and the captain's details.
+
+## Request Details
+- **Method:** POST
+- **Endpoint:** /captains/login
+- **Content-Type:** application/json
+- **Body Parameters:**
+```json
+{
+  "email": "string", // required, valid email address
+  "password": "string" // required, minimum 6 characters
+}
+```
+
+## Response
+- **Success:**
+  - **Status Code:** 200 OK
+  - **Body:**
+```json
+{
+  "token": "string", // JWT authentication token
+  "captain": {
+    "id": "string", // unique identifier for the captain
+    "fullname": {
+      "firstname": "string",
+      "lastname": "string"
+    },
+    "email": "string",
+    "vehicle": {
+      "color": "string",
+      "plate": "string",
+      "capacity": "integer",
+      "vehicleType": "string"
+    }
+  }
+}
+```
+- **Authentication Error:**
+  - **Status Code:** 401 Unauthorized
+  - **Body:**
+```json
+{
+  "message": "Invalid email or password"
+}
+```
+
+# /captains/profile Endpoint Documentation
+
+## Description
+Retrieves the profile of the authenticated captain. The captain must be logged in and provide a valid JWT token.
+
+## Request Details
+- **Method:** GET
+- **Endpoint:** /captains/profile
+- **Headers:**
+  - `Authorization`: Bearer `<JWT token>` (required)
+
+## Response
+- **Success:**
+  - **Status Code:** 200 OK
+  - **Body:**
+```json
+{
+  "captain": {
+    "id": "string", // unique identifier for the captain
+    "fullname": {
+      "firstname": "string",
+      "lastname": "string"
+    },
+    "email": "string",
+    "vehicle": {
+      "color": "string",
+      "plate": "string",
+      "capacity": "integer",
+      "vehicleType": "string"
+    }
+  }
+}
+```
+- **Authentication Error:**
+  - **Status Code:** 401 Unauthorized
+  - **Body:**
+```json
+{
+  "message": "Unauthorized"
+}
+```
+
+# /captains/logout Endpoint Documentation
+
+## Description
+Logs out the authenticated captain by clearing the JWT token and blacklisting it.
+
+## Request Details
+- **Method:** GET
+- **Endpoint:** /captains/logout
+- **Headers:**
+  - `Authorization`: Bearer `<JWT token>` (required)
+
+## Response
+- **Success:**
+  - **Status Code:** 200 OK
+  - **Body:**
+```json
+{
+  "message": "Logged out successfully"
+}
+```
+- **Authentication Error:**
+  - **Status Code:** 401 Unauthorized
+  - **Body:**
+```json
+{
+  "message": "Unauthorized"
 }
 ```
