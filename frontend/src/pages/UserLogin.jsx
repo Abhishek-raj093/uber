@@ -1,17 +1,34 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useContext, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { UserDataContext } from '../context/UserContext'
+import { Navigate } from 'react-router-dom'
+import axios from 'axios'
 
 const UserLogin = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [userData, setUserData] = useState({})
 
-    const submitHandler = (e)=>{
+    const { user, setUser } = useContext(UserDataContext)
+    const navigate = useNavigate()
+
+    const submitHandler = async (e)=>{
         e.preventDefault();
-        setUserData({
-            email: email,
-            password: password
-        })
+
+        const userData = {
+          email: email,
+          password: password
+        }
+
+        const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/login`,userData)
+
+        if (response.status === 200) {
+          const data = response.data 
+          setUser(data.user)
+          localStorage.setItem('token', data.token)
+          navigate('/home') 
+        }
+
         setEmail('')
         setPassword('')
     }
@@ -23,7 +40,7 @@ const UserLogin = () => {
       <form onSubmit={(e)=>{
         submitHandler(e)
       }}>
-        <h3 className='text-lg font-medium mb-2'>Whatt's your email</h3>
+        <h3 className='text-lg font-medium mb-2'>What's your email</h3>
         <input
         required 
         value={email}
